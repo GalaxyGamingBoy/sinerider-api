@@ -73,10 +73,11 @@ export function getLevelUrl(levelName: string) : Promise<string> {
       fields: ["puzzleURL"],
       filterByFormula: `AND({active},{id}=\"${levelName}\")`,
     }).firstPage().then(records => {
-      if (records.length == 0) reject("No level found");
+      if (records.length == 0) { reject("No level found"); return; };
       const record = records[0]
-      const puzzleURL = record.get("puzzleURL")
-      if (puzzleURL == undefined) reject("No level found");
+      
+      const puzzleURL = record.get("puzzleURL");
+      if (puzzleURL == undefined) { reject("No level found"); return; };
 
       resolve(puzzleURL as string);
      })
@@ -88,13 +89,17 @@ export function getRedditUrl(levelName: string) : Promise<string> {
     base("Config").select({
       filterByFormula: `{config_name}=\"reddit_posturl_${levelName}\"`
     }).firstPage().then(records => {
-      if (records.length == 0) reject("No level found");
-      const record = records[0]
-      const redditURL = record.get("value")
-      if (redditURL == undefined) reject("No level found");
+        if (records.length == 0) {
+            reject("No level found");
+            return;
+        }
+        const record = records[0];
+        
+        const redditURL = record.get("value");
+        if (redditURL == undefined) { reject("No level found"); return; }
 
-      resolve(redditURL as string);
-     })
+        resolve(redditURL as string);
+    })
   })
 }
 
